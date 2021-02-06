@@ -1,11 +1,55 @@
 import got from 'got';
-import {strict as assert} from 'assert'
+import { strict as assert } from 'assert'
+import { it } from 'mocha';
+import { URLSearchParams } from 'url'
+
+
+const host = 'http://localhost/v2'
 
 describe('User can', function () {
-    it('receive pet by his id', async function() {
-        const response = await got('http://localhost/v2/pet/1')
+    it('receive pet by his id', async function () {
+        const response = await got(`${host}/pet/1`)
         const body = JSON.parse(response.body)
-        
+
         assert(body.id == 1, `Expected API to return pet with id 1, but got ${body.id}`)
+    })
+
+    it('can be received by status', async function () {
+        let response = await got(`${host}/pet/findByStatus`, {
+            searchParams: { status: 'available' }
+        })
+        let body = JSON.parse(response.body)
+        assert(body.length > 0)
+
+        response = await got(`${host}/pet/findByStatus`, {
+            searchParams: { status: 'pending' }
+        })
+        body = JSON.parse(response.body)
+        assert(body.length > 0)
+
+        response = await got(`${host}/pet/findByStatus`, {
+            searchParams: { status: 'sold' }
+        })
+        body = JSON.parse(response.body)
+        assert(body.length > 0)
+
+        response = await got(`${host}/pet/findByStatus`, {
+            searchParams: new URLSearchParams({ status: ['pending', 'available'] })
+        })
+        body = JSON.parse(response.body)
+        assert(body.length > 0)
+        assert(body.some((pet: any) => pet.status == 'available'))
+        assert(body.some((pet: any) => pet.status == 'pending'))
+        assert(!body.some((pet: any) => pet.status == 'sold'))
+    })
+    it('can be received by tag', async function () {
+        const response = await got(`${host}/pet/findByTags`, {
+            searchParams: { tags: 'tag1' }
+        })
+        const body = JSON.parse(response.body)
+        assert(body.length > 0)
+        assert(body.some(
+            (pet: any) => pet.tags.some(
+                (tag: any) => tag.name == 'tag1')))
     })
 })
