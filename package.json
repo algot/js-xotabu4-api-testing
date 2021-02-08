@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "https://www.youtube.com/watch?v=HmzT298UOy8",
   "scripts": {
-    "test": "mocha --require ts-node/register ./tests/**/*.test.ts"
+    "test": "mocha --require ts-node/register ./tests/**/*.test.ts",
+    "test-one-test": "mocha --require ts-node/register ./tests/**/*.test.ts --grep '^Pet$'",
+    "test-file-filename": "mocha --require ts-node/register", 
+    "test-file": "mocha --require ts-node/register ./tests/**/pet.test.ts"
   },
   "keywords": [],
   "author": "",
