@@ -1,7 +1,7 @@
 import got from 'got'
 import { URLSearchParams } from 'url'
 
-const host = 'http://localhost/v2'
+const host = 'http://localhost/api'
 
 export class PetController {
     async getById(id: number | string) {
