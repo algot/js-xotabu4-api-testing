@@ -4,8 +4,8 @@ import { PetController } from '../api/controller/pet.controller'
 
 const pet = new PetController()
 
-describe('User can', function () {
-    it('receive pet by his id', async function () {
+describe('Pet', function () {
+    it('can be received by his id', async function () {
         const body = await pet.getById(1)
         assert(body.id == 1, `Expected API to return pet with id 1, but got ${body.id}`)
     })
