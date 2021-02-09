@@ -1,26 +1,33 @@
-import got from 'got'
 import { URLSearchParams } from 'url'
+import { JsonRequest } from '../request'
 
 const host = 'http://localhost/api'
 
 export class PetController {
     async getById(id: number | string) {
-        const response = await got(`${host}/pet/${id}`)
-        return JSON.parse(response.body)
+        return (
+            await new JsonRequest()
+                .url(`${host}/pet/${id}`)
+                .send()
+        ).body
     }
 
     async findByTags(tags: string | string[]) {
-        const response = await got(`${host}/pet/findByTags`, {
-            searchParams: new URLSearchParams({ tags })
-        })
-        return JSON.parse(response.body)
+        return (
+            await new JsonRequest()
+                .url(`${host}/pet/findByTags`)
+                .searchParams(new URLSearchParams({ tags }))
+                .send()
+        ).body
     }
 
     async findByStatus(status: string | string[]) {
-        const response = await got(`${host}/pet/findByStatus`, {
-            searchParams: new URLSearchParams({ status })
-        })
-        return JSON.parse(response.body)
+        return (
+            await new JsonRequest()
+                .url(`${host}/pet/findByStatus`)
+                .searchParams(new URLSearchParams({ status }))
+                .send()
+        ).body
     }
 
     async addNew(pet: {
@@ -36,18 +43,13 @@ export class PetController {
         }[];
         status: string,
     }) {
-        const response = await got(`${host}/pet`, {
-            method: 'POST',
-            json: pet
-        });
-        return JSON.parse(response.body);
-    }
-
-    async delete(id: number | string) {
-        const response = await got(`${host}/pet/${id}`, {
-            method: 'DELETE'
-        })
-        return JSON.parse(response.body)
+        return (
+            await new JsonRequest()
+                .url(`${host}/pet`)
+                .method('POST')
+                .body(pet)
+                .send()
+        ).body
     }
 
     async update(pet: {
@@ -64,10 +66,21 @@ export class PetController {
         }[],
         status: string,
     }) {
-        const response = await got(`${host}/pet`, {
-            method: 'PUT',
-            json: pet
-        })
-        return JSON.parse(response.body)
+        return (
+            await new JsonRequest()
+                .url(`${host}/pet`)
+                .method('PUT')
+                .body(pet)
+                .send()
+        ).body
+    }
+
+    async delete(id: number | string) {
+        return (
+            await new JsonRequest()
+                .url(`${host}/pet/${id}`)
+                .method('DELETE')
+                .send()
+        ).body
     }
 }
