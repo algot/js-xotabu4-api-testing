@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "https://www.youtube.com/watch?v=HmzT298UOy8",
   "scripts": {
+    "postinstall": "npm run pretest",
+    "pretest": "openapi-typescript http://localhost/api/swagger.json --output ./.temp/types.ts",
     "test": "mocha --require ts-node/register ./tests/**/*.test.ts",
     "test-one-test": "mocha --require ts-node/register ./tests/**/*.test.ts --grep '^Pet$'",
-    "test-file-filename": "mocha --require ts-node/register", 
-    "test-file": "mocha --require ts-node/register ./tests/**/pet.test.ts"
+    "test-file-filename": "mocha --require ts-node/register",
+    "test-file": "mocha --require ts-node/register ./tests/**/store.test.ts"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +17,9 @@
     "@types/mocha": "^8.2.0",
     "@types/node": "^14.14.22",
     "got": "^11.8.1",
+    "http-req-builder": "^1.0.2",
     "mocha": "^8.2.1",
+    "openapi-typescript": "^3.0.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   }
