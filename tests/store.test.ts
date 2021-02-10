@@ -12,20 +12,18 @@ describe('Store', () => {
         assert(Object.keys(inventory).length > 0, `List of inventory statuses must not be empty`)
 
         await pet.addNew(petWithStatus('available'))
-
         const inventoryWithAvailableAdded = await store.getInventory()
         assert.equal(inventoryWithAvailableAdded.available, inventory.available + 1,
             `Available value in inventory must be increased by 1`)
 
         await pet.addNew(petWithStatus('pending'))
         const inventoryWithPendingAdded = await store.getInventory()
-        assert.equal(inventoryWithPendingAdded.pending, inventory.available + 1,
+        assert.equal(inventoryWithPendingAdded.available, inventory.available + 1,
             `Pending value in inventory must be increased by 1`)
 
         await pet.addNew(petWithStatus('sold'))
-
         const inventoryWithSoldAdded = await store.getInventory()
-        assert.equal(inventoryWithSoldAdded.sold, inventory.available + 1,
+        assert.equal(inventoryWithSoldAdded.available, inventory.available + 1,
             `Sold value in inventory must be increased by 1`)
     })
 })
