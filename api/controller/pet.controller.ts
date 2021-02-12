@@ -1,16 +1,67 @@
 import { URLSearchParams } from 'url'
 import { definitions, operations } from '../../.temp/types'
 import { JsonRequest } from 'http-req-builder'
+import { validate } from '../validator'
 
 const host = 'http://localhost/api'
 
 export class PetController {
     async getById(id: number | string) {
-        return (
+        const body = (
             await new JsonRequest()
                 .url(`${host}/pet/${id}`)
                 .send<operations['getPetById']['responses']['200']['schema']>()
         ).body
+
+
+        const schema = {
+            "$schema": "http://json-schema.org/draft-07/schema",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "category": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "photoUrls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        }
+        validate(schema, body)
+        return body
     }
 
     async findByTags(tags: string | string[]) {
