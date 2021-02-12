@@ -1,6 +1,10 @@
 import Ajv from 'ajv'
-import { ValidationError } from 'ajv/dist/compile/error_classes'
-import validation from 'ajv/dist/vocabularies/validation'
+import { config } from '../conf'
+
+export async function loadAPISpec() {
+    const url = `${config.hostname}/swagger.json`
+    return SwaggerParser.dereference(url)
+}
 
 export function validate(schema: any, body: any) {
     const ajv = new Ajv({
