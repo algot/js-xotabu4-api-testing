@@ -1,27 +1,26 @@
 import { strict as assert } from 'assert'
 import { it } from 'mocha';
-import { PetController } from '../api/controller/pet.controller'
 import { definitions } from '../.temp/types'
-
-const pet = new PetController()
+import { ApiClient } from '../api/client';
 
 describe('Pet', function () {
     it('can be received by his id', async function () {
-        const body = await pet.getById(1)
+        const body = await ApiClient.unauthorized().pet.getById(1)
         assert(body.id == 1, `Expected API to return pet with id 1, but got ${body.id}`)
     })
 
     it('can be received by status', async function () {
-        let body = await pet.findByStatus('available')
+        const client = ApiClient.unauthorized()
+        let body = await client.pet.findByStatus('available')
         assert(body.length > 0)
 
-        body = await pet.findByStatus('pending')
+        body = await client.pet.findByStatus('pending')
         assert(body.length > 0)
 
-        body = await pet.findByStatus('sold')
+        body = await client.pet.findByStatus('sold')
         assert(body.length > 0)
 
-        body = await pet.findByStatus(['pending', 'available'])
+        body = await client.pet.findByStatus(['pending', 'available'])
         assert(body.length > 0)
         assert(body.some(pet => pet.status == 'available'))
         assert(body.some(pet => pet.status == 'pending'))
@@ -29,7 +28,8 @@ describe('Pet', function () {
     })
 
     it('can be received by tag', async function () {
-        const body = await pet.findByTags('tag1')
+        const client = ApiClient.unauthorized()
+        const body = await client.pet.findByTags('tag1')
         assert(body.length > 0)
         assert(body.every(pet =>
             pet.tags.some(
@@ -37,6 +37,7 @@ describe('Pet', function () {
     })
 
     it('can be added, updated, and deleted', async function () {
+        const adminClient = await ApiClient.loginAs({ username: 'admin', password: 'admin' })
         const petToCreate: Omit<definitions['Pet'], 'id'> = {
             "category": {
                 "id": 0,
@@ -54,7 +55,7 @@ describe('Pet', function () {
             ],
             "status": "available"
         }
-        const addedPet = await pet.addNew(petToCreate)
+        const addedPet = await adminClient.pet.addNew(petToCreate)
         assert.deepEqual(
             addedPet,
             {
@@ -64,7 +65,7 @@ describe('Pet', function () {
             `Expected created pet to match data used upon creation`
         )
 
-        const foundAddedPet = await pet.getById(addedPet.id)
+        const foundAddedPet = await adminClient.pet.getById(addedPet.id)
         assert.deepEqual(
             foundAddedPet,
             {
@@ -91,9 +92,9 @@ describe('Pet', function () {
             ],
             status: "pending"
         }
-        const updatedPet = await pet.update(newerPet)
+        const updatedPet = await adminClient.pet.update(newerPet)
         assert.deepEqual(updatedPet, newerPet, `Expected updated pet to equal data used upon updating`)
 
-        await pet.delete(addedPet.id)
+        await adminClient.pet.delete(addedPet.id)
     })
 })
