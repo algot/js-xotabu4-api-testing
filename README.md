@@ -1,6 +1,6 @@
 # HOTABU4 API testing videos
 
-https://www.youtube.com/watch?v=HmzT298UOy8
+https://www.youtube.com/watch?v=HmzT298UOy8&list=PLEUkJQfJdxsQptXYqu07xwNyc_kcCzX2I
 
 
 ## to run petstore container localy

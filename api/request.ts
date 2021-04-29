@@ -1,10 +1,10 @@
 import { JsonRequest } from 'http-req-builder'
 import { ResponseValidator } from 'response-openapi-validator'
-import { config } from '../conf'
+import { CONFIG } from '../config/env';
 
 const responseValidator = new ResponseValidator({
-    openApiSpecPath: `${config.hostname}/swagger.json`,
-    apiPathPrefix: '/api',
+    openApiSpecPath: CONFIG.PETSTORE_SWAGGER_URL,
+    apiPathPrefix: CONFIG.PETSTORE_API_PREFIX_PATH,
     ajvOptions: {
         allErrors: true,
         verbose: true,
