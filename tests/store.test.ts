@@ -1,9 +1,9 @@
-import { strict as assert } from 'assert'
-import { definitions } from '../.temp/types'
-import { ApiClient } from '../api/client'
+import { strict as assert } from 'assert';
+import { definitions } from '../.temp/types';
+import { ApiClient } from '../api/client';
 
 describe('Store', () => {
-    it('should return its inventory, and correctly updates statuses', async function () {
+    it('can return its inventory, and correctly updates statuses', async function () {
         const adminClient = await ApiClient.loginAs({ username: 'admin', password: 'admin' })
         const inventory = await adminClient.store.getInventory()
         assert(Object.keys(inventory).length > 0, `List of inventory statuses must not be empty`)
@@ -15,20 +15,22 @@ describe('Store', () => {
 
         await adminClient.pet.addNew(petWithStatus('pending'))
         const inventoryWithPendingAdded = await adminClient.store.getInventory()
-        assert.equal(inventoryWithPendingAdded.available, inventory.available + 1,
+        assert.equal(inventoryWithPendingAdded.pending, inventory.pending + 1,
             `Pending value in inventory must be increased by 1`)
+
 
         await adminClient.pet.addNew(petWithStatus('sold'))
         const inventoryWithSoldAdded = await adminClient.store.getInventory()
-        assert.equal(inventoryWithSoldAdded.available, inventory.available + 1,
+        assert.equal(inventoryWithSoldAdded.sold, inventory.sold + 1,
             `Sold value in inventory must be increased by 1`)
     })
     it('allows to place order by user, and admin can see created order', async function () {
         const userClient = await ApiClient.loginAs({ username: 'user', password: 'user' })
-        const order = {
+        const order: Omit<definitions['Order'], 'id'> = {
             petId: 1,
             quantity: 1,
-            shipDate: new Date().toISOString()
+            shipDate: new Date().toISOString(),
+            status: 'placed'
         }
 
         const placedOrder = await userClient.store.placeOrder(order)
