@@ -4,11 +4,10 @@
   "description": "https://www.youtube.com/watch?v=HmzT298UOy8",
   "scripts": {
     "postinstall": "npm run pretest",
-    "pretest": "openapi-typescript http://localhost/api/swagger.json --output ./.temp/types.ts",
-    "test": "mocha --require ts-node/register --require dotenv/config ./tests/**/*.test.ts",
-    "test-one-test": "mocha --require ts-node/register ./tests/**/*.test.ts --grep '^Pet$'",
-    "test-file-filename": "mocha --require ts-node/register",
-    "test-file": "mocha --require ts-node/register ./tests/**/store.test.ts"
+    "pretest": "ts-node ./utils/generate-typings.ts",
+    "test": "mocha",
+    "test-one-test": "mocha ./tests/**/*.test.ts --grep '^Pet$'",
+    "test-file": "mocha ./tests/**/store.test.ts"
   },
   "keywords": [],
   "author": "",
