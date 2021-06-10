@@ -3,7 +3,7 @@ import { ApiClient } from "../api/client"
 import { strict as assert } from "assert"
 
 describe('User', () => {
-    it('Can register', async function () {
+    it('can register', async function () {
         const userToCreate: Omit<definitions['User'], 'id' | 'userStatus'> = {
             firstName: 'Test',
             lastName: 'Test',
