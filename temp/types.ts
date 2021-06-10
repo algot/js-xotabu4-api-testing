@@ -26,17 +26,25 @@ export interface paths {
     /** Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing. */
     get: operations["findPetsByTags"];
   };
+  "/store/order": {
+    post: operations["placeOrder"];
+  };
   "/store/order/{orderId}": {
     /** For valid response try integer IDs with value >= 1 and <= 10 */
     get: operations["getOrderById"];
     delete: operations["deleteOrder"];
   };
-  "/store/order": {
-    post: operations["placeOrder"];
-  };
   "/store/inventory": {
     /** Returns a map of status codes to quantities */
     get: operations["getInventory"];
+  };
+  "/user/create": {
+    /** This can only be done by admin */
+    post: operations["createUser"];
+  };
+  "/user": {
+    /** This can only be done by the logged in user. */
+    put: operations["updateUser"];
   };
   "/user/{id}": {
     get: operations["getUserById"];
@@ -52,14 +60,6 @@ export interface paths {
   "/user/register": {
     /** Register new user */
     post: operations["registerUser"];
-  };
-  "/user/create": {
-    /** This can only be done by admin */
-    post: operations["createUser"];
-  };
-  "/user": {
-    /** This can only be done by the logged in user. */
-    put: operations["updateUser"];
   };
 }
 
@@ -262,6 +262,28 @@ export interface operations {
       400: unknown;
     };
   };
+  placeOrder: {
+    parameters: {
+      header: {
+        /** User only */
+        token: unknown;
+      };
+      body: {
+        /** order placed for purchasing the pet */
+        body: definitions["Order"];
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        schema: definitions["Order"];
+      };
+      /** Wrong Order structure */
+      400: unknown;
+      /** Must have user permissions to access this endpoint */
+      401: unknown;
+    };
+  };
   /** For valid response try integer IDs with value >= 1 and <= 10 */
   getOrderById: {
     parameters: {
@@ -303,28 +325,6 @@ export interface operations {
       404: unknown;
     };
   };
-  placeOrder: {
-    parameters: {
-      header: {
-        /** User only */
-        token: unknown;
-      };
-      body: {
-        /** order placed for purchasing the pet */
-        body: definitions["Order"];
-      };
-    };
-    responses: {
-      /** successful operation */
-      200: {
-        schema: definitions["Order"];
-      };
-      /** Wrong Order structure */
-      400: unknown;
-      /** Must have user permissions to access this endpoint */
-      401: unknown;
-    };
-  };
   /** Returns a map of status codes to quantities */
   getInventory: {
     parameters: {
@@ -342,6 +342,48 @@ export interface operations {
       400: unknown;
       /** Must have admin permissions to access this endpoint */
       401: unknown;
+    };
+  };
+  /** This can only be done by admin */
+  createUser: {
+    parameters: {
+      header: {
+        token?: unknown;
+      };
+      body: {
+        /** User to create */
+        body: definitions["User"];
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        schema: definitions["User"];
+      };
+      /** Wrong user structure */
+      400: unknown;
+    };
+  };
+  /** This can only be done by the logged in user. */
+  updateUser: {
+    parameters: {
+      header: {
+        token?: unknown;
+      };
+      body: {
+        /** Updated user object */
+        body: definitions["User"];
+      };
+    };
+    responses: {
+      /** successful operation */
+      200: {
+        schema: definitions["User"];
+      };
+      /** Invalid user supplied */
+      400: unknown;
+      /** User not found */
+      404: unknown;
     };
   };
   getUserById: {
@@ -426,48 +468,6 @@ export interface operations {
       };
       /** Wrong user structure */
       400: unknown;
-    };
-  };
-  /** This can only be done by admin */
-  createUser: {
-    parameters: {
-      header: {
-        token?: unknown;
-      };
-      body: {
-        /** User to create */
-        body: definitions["User"];
-      };
-    };
-    responses: {
-      /** successful operation */
-      200: {
-        schema: definitions["User"];
-      };
-      /** Wrong user structure */
-      400: unknown;
-    };
-  };
-  /** This can only be done by the logged in user. */
-  updateUser: {
-    parameters: {
-      header: {
-        token?: unknown;
-      };
-      body: {
-        /** Updated user object */
-        body: definitions["User"];
-      };
-    };
-    responses: {
-      /** successful operation */
-      200: {
-        schema: definitions["User"];
-      };
-      /** Invalid user supplied */
-      400: unknown;
-      /** User not found */
-      404: unknown;
     };
   };
 }
