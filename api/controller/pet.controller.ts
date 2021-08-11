@@ -1,8 +1,11 @@
+import { allure } from 'allure-mocha/dist/MochaAllureReporter';
 import { URLSearchParams } from 'url'
 import { definitions, operations } from '../../.temp/types'
+import { AllureStep } from '../../utils/allureStep';
 import { BaseController } from './base.controller'
 
 export class PetController extends BaseController {
+    @AllureStep(`[PetController] getById`)
     async getById(id: number | string) {
         return (
             await this.request()
@@ -11,6 +14,7 @@ export class PetController extends BaseController {
         ).body;
     }
 
+    @AllureStep(`[PetController] findByTags`)
     async findByTags(tags: string | string[]) {
         return (
             await this.request()
@@ -20,6 +24,7 @@ export class PetController extends BaseController {
         ).body;
     }
 
+    @AllureStep(`[PetController] findByStatus`)
     async findByStatus(status: string | string[]) {
         return (
             await this.request()
@@ -30,6 +35,7 @@ export class PetController extends BaseController {
     }
 
 
+    @AllureStep(`[PetController] addNew`)
     async addNew(pet: Omit<definitions['Pet'], 'id'>) {
         return (
             await this.request()
@@ -40,6 +46,7 @@ export class PetController extends BaseController {
         ).body;
     }
 
+    @AllureStep(`[PetController] update`)
     async update(pet: definitions['Pet']) {
         return (
             await this.request()
@@ -50,6 +57,7 @@ export class PetController extends BaseController {
         ).body;
     }
 
+    @AllureStep(`[PetController] delete`)
     async delete(id: number | string) {
         return (
             await this.request()
